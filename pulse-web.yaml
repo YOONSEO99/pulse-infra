@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: pulse-sample-app
-        image: yoonseo/pulse-sample-app:v1  # 🌟 안전한 구버전(v1) 이미지로 출발!
+        image: pulse-sample-app:v1  # 🌟 안전한 구버전(v1) 이미지로 출발!
         ports:
         - containerPort: 8085               # 🌟 우리 Node.js 앱 포트인 8085로 매핑!
   # -------------------------------------------------------------
