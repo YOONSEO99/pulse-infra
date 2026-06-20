@@ -1,44 +1,43 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: pulse-web-server
-  namespace: pulse
+  name: pulse-sample-app
+  namespace: pulse              # 방 이름도 우리 앱이 사는 'pulse'로 지정!
 spec:
-  replicas: 4
+  replicas: 4                    # 카나리 비율을 시각적으로 예쁘게 보려고 4대로 유지합니다.
   selector:
     matchLabels:
-      app: pulse-web
+      app: pulse-sample-app
   template:
     metadata:
       labels:
-        app: pulse-web
+        app: pulse-sample-app
     spec:
       containers:
-      - name: web-nginx
-        image: nginx:1.25-alpine
+      - name: pulse-sample-app
+        image: yoonseo/pulse-sample-app:v1  # 🌟 안전한 구버전(v1) 이미지로 출발!
         ports:
-        - containerPort: 80
+        - containerPort: 8085               # 🌟 우리 Node.js 앱 포트인 8085로 매핑!
   # -------------------------------------------------------------
-  # [★핵심] 카나리 배포 전략 심기
+  # [★핵심] 카나리 배포 전략
   # -------------------------------------------------------------
   strategy:
     canary:
       steps:
-      - setWeight: 25        # 1. 새 버전이 나오면 트래픽의 25%만 먼저 보낸다 (서버 4대 중 1대만 변경)
-      - pause: {duration: 1m} # 2. 그 상태로 1분 동안 에러가 나는지 지켜본다 (대기)
-      - setWeight: 50        # 3. 문제없으면 트래픽을 50%까지 확대한다
-      - pause: {duration: 1m} # 4. 다시 1분 동안 모니터링하며 대기한다
-                             # 5. 이후 최종적으로 100% 완전 교체한다!
+      - setWeight: 25        # 1. 새 버전이 나오면 딱 25%만 먼저 보낸다 (4대 중 1대만 테스트)
+      - pause: {}            # 2. 💡 [수정] 대기시간(1m) 대신 '무한 대기'로 바꿔서 안젤라님이 승인 버튼 누를 때까지 딱 멈춰 서게 만들게요! (손맛용)
+      - setWeight: 50        # 3. 승인하면 50%까지 확대
+      - pause: {duration: 10s} # 4. 10초 동안 간 보다가 문제없으면 100% 완전 교체!
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pulse-web-service
+  name: pulse-sample-app-service
   namespace: pulse
 spec:
   type: ClusterIP
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 8085               # 밖에서 들어오는 포트
+    targetPort: 8085         # 컨테이너 안으로 보내는 포트
   selector:
-    app: pulse-web
+    app: pulse-sample-app
