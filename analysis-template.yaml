@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: pulse-error-rate-check # 👈 바로 이 이름입니다!
+  namespace: pulse
+spec:
+  metrics:
+  - name: error-count
+    interval: 10s
+    # 🌟 [치트키] 프로메테우스 결과가 -1이어야 통과하게 만듭니다. 
+    # 에러가 0개여도 무조건 빨간불(불합격)이 떠서 자동으로 롤백이 터지게 만드는 마법의 주문입니다.
+    successCondition: result[0] == -1 
+    failureLimit: 1
+    provider:
+      prometheus:
+        # 미니쿠베 내부에 떠 있는 프로메테우스 관제탑의 주소
+        address: http://prometheus-server.monitoring.svc.cluster.local:80
+        query: |
+          sum(delta(pulse_http_requests_total{status=~"5.*"}[10s])) or vector(0)
