@@ -2,9 +2,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: pulse-sample-app
-  namespace: pulse              # 방 이름도 우리 앱이 사는 'pulse'로 지정!
+  namespace: pulse
 spec:
-  replicas: 4                    # 카나리 비율을 시각적으로 예쁘게 보려고 4대로 유지합니다.
+  replicas: 4
   selector:
     matchLabels:
       app: pulse-sample-app
@@ -15,19 +15,25 @@ spec:
     spec:
       containers:
       - name: pulse-sample-app
-        image: pulse-sample-app:v1  # 🌟 안전한 구버전(v1) 이미지로 출발!
+        # 🌟 드디어 가짜 주소가 아닌, 방금 업로드한 진짜 대장님의 주소를 꽂아 넣습니다!
+        image: yoon327/pulse-sample-app:v3 
         ports:
-        - containerPort: 8085               # 🌟 우리 Node.js 앱 포트인 8085로 매핑!
+        - containerPort: 8080
   # -------------------------------------------------------------
-  # [★핵심] 카나리 배포 전략
+  # [★핵심] 프로메테우스 자동 감시단이 결합된 카나리 전략
   # -------------------------------------------------------------
   strategy:
     canary:
       steps:
-      - setWeight: 25        # 1. 새 버전이 나오면 딱 25%만 먼저 보낸다 (4대 중 1대만 테스트)
-      - pause: {}            # 2. 💡 [수정] 대기시간(1m) 대신 '무한 대기'로 바꿔서 안젤라님이 승인 버튼 누를 때까지 딱 멈춰 서게 만들게요! (손맛용)
-      - setWeight: 50        # 3. 승인하면 50%까지 확대
-      - pause: {duration: 10s} # 4. 10초 동안 간 보다가 문제없으면 100% 완전 교체!
+      - setWeight: 25
+      # 25% 상태로 멈췄을 때, 어제 만든 자동 평가지(pulse-error-rate-check)를 가동합니다!
+      - pause: {}
+        analysis:
+          templates:
+          - templateName: pulse-error-rate-check
+      - setWeight: 50
+      - pause: {duration: 10s}
+      - setWeight: 100
 ---
 apiVersion: v1
 kind: Service
@@ -37,7 +43,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 8085               # 밖에서 들어오는 포트
-    targetPort: 8085         # 컨테이너 안으로 보내는 포트
+  - port: 8080       
+    targetPort: 8080 
   selector:
     app: pulse-sample-app
