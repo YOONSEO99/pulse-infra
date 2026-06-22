@@ -15,22 +15,22 @@ spec:
     spec:
       containers:
       - name: pulse-sample-app
-        # 🌟 드디어 가짜 주소가 아닌, 방금 업로드한 진짜 대장님의 주소를 꽂아 넣습니다!
-        image: yoon327/pulse-sample-app:v3 
+        image: yoon327/pulse-sample-app:v3 # 대장님의 진짜 든든한 이미지 주소!
         ports:
         - containerPort: 8080
   # -------------------------------------------------------------
-  # [★핵심] 프로메테우스 자동 감시단이 결합된 카나리 전략
+  # [교정 완료] 백그라운드 자동 감시단 전략
   # -------------------------------------------------------------
   strategy:
     canary:
+      # 🌟 [핵심 수정] steps 안에서 빼서 canary 바로 아래 배치합니다.
+      # 이렇게 하면 배포가 시작되자마자 백그라운드에서 실시간 감시단이 알아서 상시 가동됩니다!
+      analysis:
+        templates:
+        - templateName: pulse-error-rate-check
       steps:
       - setWeight: 25
-      # 25% 상태로 멈췄을 때, 어제 만든 자동 평가지(pulse-error-rate-check)를 가동합니다!
-      - pause: {}
-        analysis:
-          templates:
-          - templateName: pulse-error-rate-check
+      - pause: {} # 🌟 이제 한 칸에 pause 하나만 깔끔하게 존재하므로 문법 에러가 나지 않습니다!
       - setWeight: 50
       - pause: {duration: 10s}
       - setWeight: 100
