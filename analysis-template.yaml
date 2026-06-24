@@ -8,7 +8,7 @@ spec:
   - name: error-count
     interval: 10s
     count: 1
-    successCondition: result[0] == 9999
+    successCondition: result[0] == 0
     failureLimit: 0
     provider:
       prometheus:
