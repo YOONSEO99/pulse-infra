@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pulse-ingress
+  namespace: pulse
+  annotations:
+    kubernetes.io/ingress.class: nginx  # 🌟 방금 설치한 Nginx 문지기한테 이 지도를 맡깁니다.
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /                         # 🌟 누구나 그냥 정문(/) 주소로 들어오면
+        pathType: Prefix
+        backend:
+          service:
+            name: pulse-sample-app-service # 🌟 대장님의 NetNie_mini 서비스로 순간이동 시켜라!
+            port:
+              number: 80
