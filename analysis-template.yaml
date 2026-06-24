@@ -1,9 +1,11 @@
-# AnalysisTemplate 구역 찾기
-metrics:
-- name: success-rate
-  successCondition: result[0] < 0  # 🌟 기존 기준이 무엇이든 '0 미만'으로 조작 (무조건 실패하게 만듦)
-  provider:
-    prometheus:
-      address: http://prometheus-operated.monitoring.svc.cluster.local:9090
-      query: |
-        sum(rate(nginx_http_requests_total{status=~"5.*"}[1m])) # 500 에러 체크 쿼리
+spec:
+  metrics:
+    - failureLimit: 1
+      interval: 10s
+      name: error-count
+      provider:
+        prometheus:
+          address: http://prometheus-server.monitoring.svc.cluster.local:80
+          # 🌟 줄바꿈과 띄어쓰기 오차를 없애기 위해 깔끔하게 한 줄로 밀어버립니다!
+          query: "sum(delta(pulse_http_requests_total{status=~\"5.*\"}[10s])) or vector(0)"
+      successCondition: result[0] == -1
