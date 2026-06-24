@@ -20,7 +20,7 @@ spec:
         - containerPort: 80
         env:
         - name: TRIGGER_ROLLBACK
-          value: "version-1"  
+          value: "version-2"  
         resources:
           requests:
             cpu: "50m"
