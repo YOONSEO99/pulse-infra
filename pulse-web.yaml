@@ -4,7 +4,7 @@ metadata:
   name: pulse-sample-app
   namespace: pulse
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       app: pulse-sample-app
