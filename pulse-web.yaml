@@ -2,9 +2,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: pulse-sample-app
-  namespace: default  # 🌟 EKS 기본 방인 default로 주파수를 맞춥니다.
+  namespace: pulse  # 🌟 아까 터미널로 만든 전용 방으로 입주!
 spec:
-  replicas: 1         # 🌟 프리티어 슬롯 방어선!
+  replicas: 1         # 안전한 슬롯 방어선
   selector:
     matchLabels:
       app: pulse-sample-app
@@ -18,7 +18,7 @@ spec:
         image: yoon327/pulse-sample-app:v3
         ports:
         - containerPort: 8080
-        resources:    # 🌟 아기 서버들을 위한 최소한의 영양실조 방지 세팅
+        resources:
           requests:
             cpu: "50m"
             memory: "64Mi"
@@ -26,13 +26,16 @@ spec:
             cpu: "100m"
             memory: "128Mi"
   # -------------------------------------------------------------
-  # 🚀 프로메테우스 없이 순수 카나리 스텝만 밟기
+  # 📊 [감시단 부활] 프로메테우스 안테나 연동 완료!
   # -------------------------------------------------------------
   strategy:
     canary:
-      steps:          # 🌟 analysis 부분을 과감히 삭제하고 steps로 바로 진입!
+      analysis:
+        templates:
+        - templateName: pulse-error-rate-check # 관제탑에 신호 쏠 분석기 이름
+      steps:
       - setWeight: 25
-      - pause: {}     # 멈춰서 대장님이 수동으로 배포 진행시킬 때까지 대기하는 구간!
+      - pause: {} # 👈 첫 25% 트래픽 넘기고 대장님의 승인을 기다리는 정지선
       - setWeight: 50
       - pause: {duration: 10s}
       - setWeight: 100
@@ -41,11 +44,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: pulse-sample-app-service
-  namespace: default
+  namespace: pulse
 spec:
-  type: LoadBalancer # 🌐 Nginx처럼 진짜 인터넷 주소 뽑아내기!
+  type: LoadBalancer
   ports:
   - port: 80
     targetPort: 8080
   selector:
-    app: pulse-web
+    app: pulse-sample-app
