@@ -1,11 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: pulse-error-rate-check
+  namespace: pulse
 spec:
   metrics:
-    - failureLimit: 1
-      interval: 10s
-      name: error-count
-      provider:
-        prometheus:
-          address: http://prometheus-server.monitoring.svc.cluster.local:80
-          # 🌟 줄바꿈과 띄어쓰기 오차를 없애기 위해 깔끔하게 한 줄로 밀어버립니다!
-          query: "sum(delta(pulse_http_requests_total{status=~\"5.*\"}[10s])) or vector(0)"
-      successCondition: result[0] == -1
+  - name: error-count
+    interval: 10s
+    successCondition: result[0] == -1
+    failureLimit: 1
+    provider:
+      prometheus:
+        address: http://prometheus-server.monitoring.svc.cluster.local:80
+        query: "sum(delta(pulse_http_requests_total{status=~\"5.*\"}[10s])) or vector(0)"
