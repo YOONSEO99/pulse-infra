@@ -8,8 +8,8 @@ spec:
   - name: error-count
     interval: 10s
     count: 1
-    successCondition: result[0] == 9999
-    failureLimit: 1
+    successCondition: result[0] == 0
+    failureLimit: 0
     provider:
       prometheus:
         address: http://prometheus-server.monitoring.svc.cluster.local:80
