@@ -20,7 +20,7 @@ spec:
         - containerPort: 80
         env:
         - name: TRIGGER_ROLLBACK
-          value: "v6.5"  
+          value: "v7-manual-pause"  
         resources:
           requests:
             cpu: "50m"
@@ -31,6 +31,8 @@ spec:
   strategy:
     canary:
       steps:
+      - setWeight: 50
+      - pause: {}
       - setWeight: 100
 
 ---
