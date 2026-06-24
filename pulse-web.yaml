@@ -15,12 +15,9 @@ spec:
     spec:
       containers:
       - name: pulse-sample-app
-        image: yoon327/pulse-sample-app:v3  # 🌟 이미지는 그대로 두고
-        env:
-        - name: ROLLBACK_TEST
-          value: "bomb-v4"                 # 🌟 환경변수를 바꿔서 새 배포(v4 효과)를 유도!
+        image: yoon327/netnie-mini:v1 # 🌟 대장님의 진짜 이미지 주소로 교체!
         ports:
-        - containerPort: 8080
+        - containerPort: 80                      # 🌟 Nginx 순정 포트 80번으로 변경!
         resources:
           requests:
             cpu: "50m"
@@ -30,16 +27,18 @@ spec:
             memory: "128Mi"
   strategy:
     canary:
-      analysis:
-        templates:
-        - templateName: pulse-error-rate-check
-        # -------------------------------------------------------------
-        # 💣 [시한폭탄 설치] 에러 수가 "음수(-100개)"여야만 통과되도록 조작!
-        # 일반적인 상황(에러 0개)에서는 무조건 "불합격" 처리됩니다.
-        # -------------------------------------------------------------
-        args:
-        - name: successCondition
-          value: "result[0] < -100"
       steps:
-      - setWeight: 50                     # 반반 트래픽 상황에서 검문 시작!
-      - pause: {duration: 10s}            # 10초 동안 관제탑 쿼리 감시
+      - setWeight: 100                           # 실전 앱이므로 바로 100% 시원하게 배포!
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pulse-sample-app-service
+  namespace: pulse
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80                               # 🌟 서비스 구멍도 80번으로 일치!
+  selector:
+    app: pulse-sample-app
