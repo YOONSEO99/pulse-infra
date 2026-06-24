@@ -34,7 +34,7 @@ spec:
       - setWeight: 50
       - analysis:
           templates:
-          - templateName: pulse-analysis-template 
+          - templateName: pulse-error-rate-check
       - setWeight: 100
 
 ---
