@@ -20,7 +20,7 @@ spec:
         - containerPort: 80
         env:
         - name: TRIGGER_ROLLBACK
-          value: "v6"  
+          value: "v6.5"  
         resources:
           requests:
             cpu: "50m"
@@ -31,7 +31,6 @@ spec:
   strategy:
     canary:
       steps:
-      - setWeight: 50
       - setWeight: 100
 
 ---
