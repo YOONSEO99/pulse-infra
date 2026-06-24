@@ -2,9 +2,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: pulse-sample-app
-  namespace: pulse
+  namespace: default  # 🌟 EKS 기본 방인 default로 주파수를 맞춥니다.
 spec:
-  replicas: 1
+  replicas: 1         # 🌟 프리티어 슬롯 방어선!
   selector:
     matchLabels:
       app: pulse-sample-app
@@ -15,22 +15,24 @@ spec:
     spec:
       containers:
       - name: pulse-sample-app
-        image: yoon327/pulse-sample-app:v3 # 대장님의 진짜 든든한 이미지 주소!
+        image: yoon327/pulse-sample-app:v3
         ports:
         - containerPort: 8080
+        resources:    # 🌟 아기 서버들을 위한 최소한의 영양실조 방지 세팅
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
   # -------------------------------------------------------------
-  # [교정 완료] 백그라운드 자동 감시단 전략
+  # 🚀 프로메테우스 없이 순수 카나리 스텝만 밟기
   # -------------------------------------------------------------
   strategy:
     canary:
-      # 🌟 [핵심 수정] steps 안에서 빼서 canary 바로 아래 배치합니다.
-      # 이렇게 하면 배포가 시작되자마자 백그라운드에서 실시간 감시단이 알아서 상시 가동됩니다!
-      analysis:
-        templates:
-        - templateName: pulse-error-rate-check
-      steps:
+      steps:          # 🌟 analysis 부분을 과감히 삭제하고 steps로 바로 진입!
       - setWeight: 25
-      - pause: {} # 🌟 이제 한 칸에 pause 하나만 깔끔하게 존재하므로 문법 에러가 나지 않습니다!
+      - pause: {}     # 멈춰서 대장님이 수동으로 배포 진행시킬 때까지 대기하는 구간!
       - setWeight: 50
       - pause: {duration: 10s}
       - setWeight: 100
@@ -39,11 +41,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: pulse-sample-app-service
-  namespace: pulse
+  namespace: default
 spec:
-  type: ClusterIP
+  type: LoadBalancer # 🌐 Nginx처럼 진짜 인터넷 주소 뽑아내기!
   ports:
-  - port: 8080       
-    targetPort: 8080 
+  - port: 80
+    targetPort: 8080
   selector:
-    app: pulse-sample-app
+    app: pulse-web
