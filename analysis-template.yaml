@@ -7,6 +7,7 @@ spec:
   metrics:
   - name: error-count
     interval: 10s
+    count: 1
     successCondition: result[0] == 0
     failureLimit: 1
     provider:
