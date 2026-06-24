@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: pulse-sample-app
-        image: yoon327/netnie-mini:v1 # 🌟 대장님의 진짜 이미지 주소로 교체!
+        image: yoon327/netnie-mini:v2 # 
         ports:
         - containerPort: 80                      # 🌟 Nginx 순정 포트 80번으로 변경!
         resources:
