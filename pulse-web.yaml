@@ -29,6 +29,8 @@ spec:
     canary:
       steps:
       - setWeight: 100                           # 실전 앱이므로 바로 100% 시원하게 배포!
+
+# (상단 Rollout 구역은 그대로 두고, 맨 밑 Service 구역만 아래처럼 바꿉니다!)
 ---
 apiVersion: v1
 kind: Service
@@ -36,9 +38,9 @@ metadata:
   name: pulse-sample-app-service
   namespace: pulse
 spec:
-  type: LoadBalancer
+  type: ClusterIP       # 🌟 요금 폭탄인 LoadBalancer를 버리고, 내부 전용(ClusterIP)으로 다이어트!
   ports:
   - port: 80
-    targetPort: 80                               # 🌟 서비스 구멍도 80번으로 일치!
+    targetPort: 80
   selector:
     app: pulse-sample-app
