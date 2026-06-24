@@ -15,12 +15,12 @@ spec:
     spec:
       containers:
       - name: pulse-sample-app
-        image: yoon327/netnie-mini:v2 
+        image: yoon327/netnie-mini:v2
         ports:
-        - containerPort: 80                     
+        - containerPort: 80
         env:
         - name: TRIGGER_ROLLBACK
-          value: "action-v2" 
+          value: "shoot-the-signal-v1"  
         resources:
           requests:
             cpu: "50m"
@@ -28,14 +28,14 @@ spec:
           limits:
             cpu: "100m"
             memory: "128Mi"
-strategy:
+  strategy:
     canary:
       steps:
-      - setWeight: 50                   
-      - analysis:                      
+      - setWeight: 50
+      - analysis:
           templates:
           - templateName: pulse-error-rate-check
-      - setWeight: 100                    
+      - setWeight: 100
 
 ---
 apiVersion: v1
@@ -44,7 +44,7 @@ metadata:
   name: pulse-sample-app-service
   namespace: pulse
 spec:
-  type: ClusterIP       
+  type: ClusterIP
   ports:
   - port: 80
     targetPort: 80
