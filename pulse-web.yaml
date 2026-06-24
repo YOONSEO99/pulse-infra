@@ -32,9 +32,7 @@ spec:
     canary:
       steps:
       - setWeight: 50
-      - analysis:
-          templates:
-          - templateName: pulse-error-rate-check
+      - pause: {}
       - setWeight: 100
 
 ---
