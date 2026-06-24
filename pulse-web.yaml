@@ -20,7 +20,7 @@ spec:
         - containerPort: 80                     
         env:
         - name: TRIGGER_ROLLBACK
-          value: "action-v1" 
+          value: "action-v2" 
         resources:
           requests:
             cpu: "50m"
@@ -28,13 +28,14 @@ spec:
           limits:
             cpu: "100m"
             memory: "128Mi"
-  strategy:
+strategy:
     canary:
-      analysis:
-        templates:
-        - templateName: pulse-error-rate-check
       steps:
-      - setWeight: 100                         
+      - setWeight: 50                   
+      - analysis:                      
+          templates:
+          - templateName: pulse-error-rate-check
+      - setWeight: 100                    
 
 ---
 apiVersion: v1
