@@ -20,7 +20,7 @@ spec:
         - containerPort: 80
         env:
         - name: TRIGGER_ROLLBACK
-          value: "v5"  
+          value: "v6-manual-pause"  
         resources:
           requests:
             cpu: "50m"
