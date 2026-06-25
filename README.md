@@ -5,7 +5,7 @@
 
 This repository contains the complete declarative manifests, environment initialization files, and routing specifications powering **Pulse**. 
 
-🔗 **Live Portfolio Specification:** `https://YOONSEO99.github.io/pulse/` *(Your actual deployment URL here)*
+🔗 **Live Portfolio Specification:** `https://YOONSEO99.github.io/pulse/`
 
 ---
 
