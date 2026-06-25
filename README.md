@@ -91,3 +91,7 @@ The platform proves its architectural robustness through three fully-documented 
 * **Helm & GitHub Actions:** Version-controls manifest properties into unified charts while executing standardized automated build tags to container registries (Docker Hub).
 
 ---
+
+```
+
+---
