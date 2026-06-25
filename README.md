@@ -1,12 +1,11 @@
-
 ```markdown
 # Pulse — Technical Infrastructure Specification
 
 > **An automated Kubernetes deployment platform on AWS EKS utilizing declarative GitOps and self-healing canary routing.**
 
-This repository contains the complete Infrastructure-as-Code (IaC) declarations, Kubernetes manifests, Helm values, and CI/CD automation workflows powering **Pulse**. 
+This repository contains the complete declarative manifests, environment initialization files, and routing specifications powering **Pulse**. 
 
-🔗 **Live Portfolio Specification:** `https://대장님의-포트폴리오-웹사이트-주소.github.io` *(Your actual deployment URL here)*
+🔗 **Live Portfolio Specification:** `https://Angela.github.io/pulse` *(Your actual deployment URL here)*
 
 ---
 
@@ -23,14 +22,16 @@ Pulse isolates application runtimes within a highly secure, private multi-AZ net
 
 ```text
 .
-├── .github/
-│   └── workflows/
-│       └── ci-cd.yaml          # GitHub Actions pipeline for building and pushing images to AWS ECR
-├── manifests/
-│   ├── pulse-web.yaml          # Argo Rollout declaration & ClusterIP Service specification
-│   ├── pulse-analysis.yaml     # Prometheus-driven AnalysisTemplate specification
-│   └── ingress.yaml            # Nginx Ingress path-based routing configuration
-└── README.md
+├── minikube/                   # Local sandbox bootstrapping & namespace initialization files
+│   ├── .terraform.lock.hcl     # Terraform provider lock file
+│   ├── terraform.tfstate       # Local state tracking for the Minikube test environment
+│   ├── terraform.tfstate.backup
+│   └── main.tf                 # Terraform script for initial local namespace setup
+├── test-zone/                  # Experimental directory for candidate manifest testing
+├── analysis-template.yaml      # Prometheus live metric analysis loop engine (AWS EKS)
+├── ingress.yaml                # Nginx Ingress path-based routing specification (AWS EKS)
+├── pulse-web.yaml              # Argo Rollouts canary deployment controller specification (AWS EKS)
+└── README.md                   # Technical infrastructure specification documentation
 
 ```
 
@@ -42,7 +43,7 @@ Pulse isolates application runtimes within a highly secure, private multi-AZ net
 
 Manages the application lifecycle by initiating a `50%` traffic split upon a Git commit tag shift. It replaces the classic human-triggered manual pause gate with a fully automated telemetry analysis block.
 
-### 📊 Telemetry Analysis (`pulse-analysis.yaml`)
+### 📊 Telemetry Analysis (`analysis-template.yaml`)
 
 Leverages a zero-tolerance Prometheus metric evaluator named `pulse-error-rate-check`. It directly queries live container telemetry via native PromQL HTTP APIs every 10 seconds.
 
@@ -87,10 +88,6 @@ The platform proves its architectural robustness through three fully-documented 
 * **AWS EKS & EC2 (t3.medium):** Hosts the container workloads with multi-AZ node resiliency. Managed group scaling allows network interfaces (ENIs) to match maximum predictable container dense capacities.
 * **Argo CD & Argo Rollouts:** Drives the GitOps paradigm. Eliminates configuration drift by synchronizing actual runtime states with declarative manifests stored inside this repository.
 * **Prometheus Telemetry:** Pull-based metric engine operating at an aggressive 10-second scrape interval to act as the automated rollback execution judge.
-* **Helm & GitHub Actions:** Version-controls manifest properties into unified charts while executing standardized automated build tags to container registries.
+* **Helm & GitHub Actions:** Version-controls manifest properties into unified charts while executing standardized automated build tags to container registries (Docker Hub).
 
 ---
-
-*Maintained by Angela — Infrastructure & Systems Engineer*
-
-```
