@@ -92,6 +92,4 @@ The platform proves its architectural robustness through three fully-documented 
 
 ---
 
-```
 
----
