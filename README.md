@@ -38,11 +38,11 @@ Pulse isolates application runtimes within a highly secure, private multi-AZ net
 
 ## 🚀 Declarative Self-Healing Specification
 
-### 🎯 Canary Rollout (`manifests/pulse-web.yaml`)
+### 🎯 Canary Rollout (`pulse-web.yaml`)
 
 Manages the application lifecycle by initiating a `50%` traffic split upon a Git commit tag shift. It replaces the classic human-triggered manual pause gate with a fully automated telemetry analysis block.
 
-### 📊 Telemetry Analysis (`manifests/pulse-analysis.yaml`)
+### 📊 Telemetry Analysis (`pulse-analysis.yaml`)
 
 Leverages a zero-tolerance Prometheus metric evaluator named `pulse-error-rate-check`. It directly queries live container telemetry via native PromQL HTTP APIs every 10 seconds.
 
